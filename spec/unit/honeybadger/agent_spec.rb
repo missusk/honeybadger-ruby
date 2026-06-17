@@ -34,6 +34,17 @@ describe Honeybadger::Agent do
       expect(instance.check_in("/foobar/")).to eq(true)
     end
 
+    it "parses check_in id from a url with project api key" do
+      stub_request(:get, "https://api.honeybadger.io/v1/check_in/hbp_abc123/my-check-in")
+        .to_return(status: 200)
+
+      config = Honeybadger::Config.new(api_key: "fake api key", logger: NULL_LOGGER)
+      instance = described_class.new(config)
+
+      expect(instance.check_in("https://api.honeybadger.io/v1/check_in/hbp_abc123/my-check-in")).to eq(true)
+      expect(instance.check_in("/v1/check_in/hbp_abc123/my-check-in")).to eq(true)
+    end
+
     it "returns false for failed check ins" do
       stub_request(:get, "https://api.honeybadger.io/v1/check_in/danny")
         .to_return(status: 400)
@@ -574,6 +585,16 @@ describe Honeybadger::Agent do
         end
       end
 
+      context "by default ignores solid_cable_messages processor sql events" do
+        let(:ignored_events) { [] }
+        let(:event_type) { "sql.active_record" }
+        let(:payload) { {query: 'SELECT * FROM "solid_cable_messages"'} }
+
+        it "does not push an event" do
+          expect(events_worker).not_to receive(:push)
+        end
+      end
+
       context "override default ignores" do
         let(:config) { Honeybadger::Config.new(api_key: "fake api key", logger: NULL_LOGGER, backend: :debug, "events.ignore_only": ignore_only) }
         let(:ignore_only) { [] }
@@ -828,6 +849,68 @@ describe Honeybadger::Agent do
       end
 
       subject.event("test_event", some_data: "is here")
+    end
+  end
+
+  context "#event with attach_environment" do
+    let(:events_worker) { double(Honeybadger::EventsWorker.new(config)) }
+    let(:instance) { Honeybadger::Agent.new(config) }
+
+    subject { instance }
+
+    before do
+      allow(instance).to receive(:events_worker).and_return(events_worker)
+    end
+
+    context "when events.attach_environment is true (default)" do
+      let(:config) { Honeybadger::Config.new(api_key: "fake api key", logger: NULL_LOGGER, backend: :debug, env: "production", "events.attach_hostname": false) }
+
+      it "includes the environment in event payloads" do
+        expect(events_worker).to receive(:push) do |msg|
+          expect(msg[:environment]).to eq("production")
+        end
+
+        subject.event("test_event", some_data: "is here")
+      end
+    end
+
+    context "when events.attach_environment is false" do
+      let(:config) { Honeybadger::Config.new(api_key: "fake api key", logger: NULL_LOGGER, backend: :debug, env: "production", "events.attach_hostname": false, "events.attach_environment": false) }
+
+      it "does not include the environment in event payloads" do
+        expect(events_worker).to receive(:push) do |msg|
+          expect(msg).not_to have_key(:environment)
+        end
+
+        subject.event("test_event", some_data: "is here")
+      end
+    end
+
+    context "when environment is not set" do
+      let(:config) { Honeybadger::Config.new(api_key: "fake api key", logger: NULL_LOGGER, backend: :debug, "events.attach_hostname": false) }
+
+      it "does not include the environment in event payloads" do
+        expect(events_worker).to receive(:push) do |msg|
+          expect(msg).not_to have_key(:environment)
+        end
+
+        subject.event("test_event", some_data: "is here")
+      end
+    end
+
+    context "when called with a single Hash payload (as metrics do)" do
+      let(:config) { Honeybadger::Config.new(api_key: "fake api key", logger: NULL_LOGGER, backend: :debug, env: "production", hostname: "test-host") }
+
+      it "still attaches environment and hostname to the payload" do
+        expect(events_worker).to receive(:push) do |msg|
+          expect(msg[:environment]).to eq("production")
+          expect(msg[:hostname]).to eq("test-host")
+          expect(msg[:event_type]).to eq("metric.hb")
+          expect(msg[:metric_name]).to eq("duration.process_action.action_controller")
+        end
+
+        subject.event(event_type: "metric.hb", metric_name: "duration.process_action.action_controller", interval: 60)
+      end
     end
   end
 

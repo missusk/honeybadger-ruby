@@ -1,5 +1,6 @@
 require "socket"
 require "honeybadger/breadcrumbs/active_support"
+require "honeybadger/backtrace"
 
 module Honeybadger
   class Config
@@ -32,11 +33,12 @@ module Honeybadger
       "Sidekiq::JobRetry::Skip"].map(&:freeze).freeze
 
     IGNORE_EVENTS_DEFAULT = [
-      {event_type: "metric.hb", metric_name: "duration.sql.active_record", query: /^(begin|commit)( immediate)?( transaction)?$/i},
       {event_type: "sql.active_record", query: /^(begin|commit)( immediate)?( transaction)?$/i},
-      {event_type: "sql.active_record", query: /(solid_queue|good_job)/i},
+      {event_type: "sql.active_record", query: /(solid_queue|good_job|solid_cable_messages)/i},
       {event_type: "sql.active_record", name: /^GoodJob/},
       {event_type: "process_action.action_controller", controller: "Rails::HealthController"},
+      {event_type: "cache_read.active_support"},
+      {event_type: "cache_fetch_hit.active_support"},
       {event_type: "cache_exist?.active_support"},
       {event_type: "cache_write.active_support"},
       {event_type: "cache_generate.active_support"},
@@ -122,6 +124,11 @@ module Honeybadger
       },
       "events.attach_hostname": {
         description: "Add the hostname to all event paylaods.",
+        default: true,
+        type: Boolean
+      },
+      "events.attach_environment": {
+        description: "Add the environment to all event payloads.",
         default: true,
         type: Boolean
       },
@@ -315,6 +322,11 @@ module Honeybadger
         default: 2,
         type: Integer
       },
+      "exceptions.backtrace_limit": {
+        description: "The maximum number of backtrace lines to include in error reports.",
+        default: Backtrace::DEFAULT_LIMIT,
+        type: Integer
+      },
       "exceptions.local_variables": {
         description: "Enable sending local variables. Requires binding_of_caller to be loaded.",
         default: false,
@@ -338,6 +350,16 @@ module Honeybadger
       "active_job.insights.enabled": {
         description: "Enable automatic data collection for Active Job.",
         default: true,
+        type: Boolean
+      },
+      "active_job.insights.events": {
+        description: "Enable automatic event capturing for Active Job.",
+        default: true,
+        type: Boolean
+      },
+      "active_job.insights.metrics": {
+        description: "Enable automatic metric data collection for Active Job.",
+        default: false,
         type: Boolean
       },
       "delayed_job.attempt_threshold": {
@@ -552,6 +574,16 @@ module Honeybadger
         description: "Enable automatic data collection for Flipper.",
         default: true,
         type: Boolean
+      },
+      "ruby_llm.insights.enabled": {
+        description: "Enable automatic data collection for RubyLLM.",
+        default: true,
+        type: Boolean
+      },
+      "ruby_llm.insights.subscriber": {
+        description: "Fully qualified class name of a custom subscriber for RubyLLM instrumentation. A class constant may also be given via Ruby configuration. Defaults to Honeybadger::RubyLLMSubscriber.",
+        default: nil,
+        type: String
       }
     }.freeze
 

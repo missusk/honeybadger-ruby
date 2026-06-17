@@ -1,6 +1,123 @@
 # Change Log
 
 
+## [6.9.0](https://github.com/honeybadger-io/honeybadger-ruby/compare/v6.8.0...v6.9.0) (2026-06-11)
+
+
+### Features
+
+* make RubyLLM insights subscriber configurable ([#829](https://github.com/honeybadger-io/honeybadger-ruby/issues/829)) ([fc9ff42](https://github.com/honeybadger-io/honeybadger-ruby/commit/fc9ff42689b87f972183286d34c7e4059bf23442))
+
+## [6.8.0](https://github.com/honeybadger-io/honeybadger-ruby/compare/v6.7.0...v6.8.0) (2026-06-10)
+
+
+### Features
+
+* add RubyLLM monitoring plugin ([#827](https://github.com/honeybadger-io/honeybadger-ruby/issues/827)) ([4b2c32d](https://github.com/honeybadger-io/honeybadger-ruby/commit/4b2c32d933b1dd35599b2a292027d50458f2c384))
+
+## [6.7.0](https://github.com/honeybadger-io/honeybadger-ruby/compare/v6.6.2...v6.7.0) (2026-06-05)
+
+
+### Features
+
+* add after_notify hooks ([#825](https://github.com/honeybadger-io/honeybadger-ruby/issues/825)) ([950fee2](https://github.com/honeybadger-io/honeybadger-ruby/commit/950fee2bb2ab81ebbfa20ea34b36045bd6b57034))
+* make backtrace limit configurable ([#824](https://github.com/honeybadger-io/honeybadger-ruby/issues/824)) ([f62ce3a](https://github.com/honeybadger-io/honeybadger-ruby/commit/f62ce3ab09ffa497fbfb2ec1fa193359b66b1a23))
+
+## [6.6.2](https://github.com/honeybadger-io/honeybadger-ruby/compare/v6.6.0...v6.6.1) (2026-05-29)
+
+
+### Bug Fixes
+
+* avoid duplicate BroadcastLogger breadcrumbs ([#814](https://github.com/honeybadger-io/honeybadger-ruby/issues/814)) ([4f5c5e0](https://github.com/honeybadger-io/honeybadger-ruby/commit/4f5c5e0dad934cc6a96f6444e257b733fd6471cf)), closes [#765](https://github.com/honeybadger-io/honeybadger-ruby/issues/765)
+* change logging level for messages emitted in the development environment ([b615c83](https://github.com/honeybadger-io/honeybadger-ruby/commit/b615c83a75b8fcb45cd8b775696a6231e5c4e107))
+* log the real reason for 403 responses ([#822](https://github.com/honeybadger-io/honeybadger-ruby/issues/822)) ([0338892](https://github.com/honeybadger-io/honeybadger-ruby/commit/03388926bb0cbb22f647860437565abf5bafd526))
+
+## [6.6.1](https://github.com/honeybadger-io/honeybadger-ruby/compare/v6.6.0...v6.6.1) (2026-05-15)
+
+
+### Bug Fixes
+
+* change logging level for messages emitted in the development environment ([b615c83](https://github.com/honeybadger-io/honeybadger-ruby/commit/b615c83a75b8fcb45cd8b775696a6231e5c4e107))
+
+## [6.6.0](https://github.com/honeybadger-io/honeybadger-ruby/compare/v6.5.6...v6.6.0) (2026-05-08)
+
+
+### Features
+
+* ignore solid_cable_messages queries ([#817](https://github.com/honeybadger-io/honeybadger-ruby/issues/817)) ([5292bb6](https://github.com/honeybadger-io/honeybadger-ruby/commit/5292bb6002fb48bb6d427bdc33767358e933417c))
+
+## [6.5.6](https://github.com/honeybadger-io/honeybadger-ruby/compare/v6.5.5...v6.5.6) (2026-05-04)
+
+
+### Bug Fixes
+
+* attach environment and hostname to metric events ([#815](https://github.com/honeybadger-io/honeybadger-ruby/issues/815)) ([0762115](https://github.com/honeybadger-io/honeybadger-ruby/commit/0762115e6f396e4d2d5389394c845b75dc1796c8))
+
+## [6.5.5](https://github.com/honeybadger-io/honeybadger-ruby/compare/v6.5.4...v6.5.5) (2026-04-08)
+
+
+### Bug Fixes
+
+* preserve API key path segment when parsing check_in URLs ([#803](https://github.com/honeybadger-io/honeybadger-ruby/issues/803)) ([229bbd2](https://github.com/honeybadger-io/honeybadger-ruby/commit/229bbd2895475c44180d71df64bc848ca130afe9))
+* remove Sidekiq server configuration from payloads ([#768](https://github.com/honeybadger-io/honeybadger-ruby/issues/768)) ([2425c6b](https://github.com/honeybadger-io/honeybadger-ruby/commit/2425c6b9917fd63f66c5c9562ea9b76d4e4d1f24)), closes [#767](https://github.com/honeybadger-io/honeybadger-ruby/issues/767)
+
+## [6.5.4](https://github.com/honeybadger-io/honeybadger-ruby/compare/v6.5.3...v6.5.4) (2026-04-06)
+
+
+### Bug Fixes
+
+* include jid in sidekiq enqueue.sidekiq event ([#804](https://github.com/honeybadger-io/honeybadger-ruby/issues/804)) ([0b46e6b](https://github.com/honeybadger-io/honeybadger-ruby/commit/0b46e6bfe66c5152d11ff04062b4c1f0d30304eb))
+
+## [6.5.3](https://github.com/honeybadger-io/honeybadger-ruby/compare/v6.5.2...v6.5.3) (2026-03-25)
+
+
+### Bug Fixes
+
+* restrict sidekiq cluster metrics collection to server processes ([#798](https://github.com/honeybadger-io/honeybadger-ruby/issues/798)) ([78562d5](https://github.com/honeybadger-io/honeybadger-ruby/commit/78562d5eaad785b87f4bce8dd8865dead3441a6c))
+
+## [6.5.2](https://github.com/honeybadger-io/honeybadger-ruby/compare/v6.5.1...v6.5.2) (2026-03-02)
+
+
+### Bug Fixes
+
+* change logs about missing metrics values to debug ([#792](https://github.com/honeybadger-io/honeybadger-ruby/issues/792)) ([8316f4e](https://github.com/honeybadger-io/honeybadger-ruby/commit/8316f4e20a1c93e2c24b4b17de39c77feecf8d2c))
+
+## [6.5.1](https://github.com/honeybadger-io/honeybadger-ruby/compare/v6.5.0...v6.5.1) (2026-03-02)
+
+
+### Bug Fixes
+
+* reduce metric cardinality for cache and SQL insights ([#789](https://github.com/honeybadger-io/honeybadger-ruby/issues/789)) ([56fed2b](https://github.com/honeybadger-io/honeybadger-ruby/commit/56fed2bf345203b31d8f2a03097280cf1ba673b0))
+* round metric duration values to 2 decimal places  ([#790](https://github.com/honeybadger-io/honeybadger-ruby/issues/790)) ([fbf14d7](https://github.com/honeybadger-io/honeybadger-ruby/commit/fbf14d7605083978ebd9f8c36761af2016eee1f0))
+
+## [6.5.0](https://github.com/honeybadger-io/honeybadger-ruby/compare/v6.4.1...v6.5.0) (2026-02-27)
+
+
+### Features
+
+* add Active Job metrics collection ([#787](https://github.com/honeybadger-io/honeybadger-ruby/issues/787)) ([cb97bd8](https://github.com/honeybadger-io/honeybadger-ruby/commit/cb97bd8252b9d0788adb215a87503cff9c04ecbc))
+
+## [6.4.1](https://github.com/honeybadger-io/honeybadger-ruby/compare/v6.4.0...v6.4.1) (2026-02-25)
+
+
+### Bug Fixes
+
+* defer ActiveJob callback registration via on_load hook ([#783](https://github.com/honeybadger-io/honeybadger-ruby/issues/783)) ([2003726](https://github.com/honeybadger-io/honeybadger-ruby/commit/2003726d28520e22ab078cc3f4170b0a81d31a6b)), closes [#782](https://github.com/honeybadger-io/honeybadger-ruby/issues/782)
+
+## [6.4.0](https://github.com/honeybadger-io/honeybadger-ruby/compare/v6.3.1...v6.4.0) (2026-02-18)
+
+
+### Features
+
+* attach environment to Insights event payloads ([#780](https://github.com/honeybadger-io/honeybadger-ruby/issues/780)) ([97d1db1](https://github.com/honeybadger-io/honeybadger-ruby/commit/97d1db12bbe474657bee71d0b822af4774ebb61e))
+
+## [6.3.1](https://github.com/honeybadger-io/honeybadger-ruby/compare/v6.3.0...v6.3.1) (2026-02-12)
+
+
+### Bug Fixes
+
+* prevent thread leak in EventsWorker#kill! ([#778](https://github.com/honeybadger-io/honeybadger-ruby/issues/778)) ([09ad0f7](https://github.com/honeybadger-io/honeybadger-ruby/commit/09ad0f7c32e0e3edb37fdb4d7db4d9ccde39f479))
+
 ## [6.3.0](https://github.com/honeybadger-io/honeybadger-ruby/compare/v6.2.1...v6.3.0) (2026-01-29)
 
 

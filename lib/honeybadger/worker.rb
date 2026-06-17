@@ -46,7 +46,9 @@ module Honeybadger
     end
 
     def send_now(msg)
-      handle_response(msg, notify_backend(msg))
+      response = notify_backend(msg)
+      run_after_notify_hooks(msg, response)
+      handle_response(msg, response)
     end
 
     def shutdown(force = false)
@@ -189,6 +191,21 @@ module Honeybadger
       backend.notify(:notices, payload)
     end
 
+    def run_after_notify_hooks(msg, response)
+      config.after_notify_hooks.each do |hook|
+        with_error_handling { hook.call(msg, response) }
+      end
+    end
+
+    def with_error_handling
+      yield
+    rescue => ex
+      error {
+        msg = "Rescued an error in an after notify hook class=%s message=%s\n\t%s"
+        sprintf(msg, ex.class, ex.message.dump, Array(ex.backtrace).join("\n\t"))
+      }
+    end
+
     def calc_throttle_interval
       ((BASE_THROTTLE**throttle) - 1).round(3)
     end
@@ -221,7 +238,7 @@ module Honeybadger
         warn { sprintf("Error report failed: payment is required. id=%s code=%s", msg.id, response.code) }
         suspend(3600)
       when 403
-        warn { sprintf("Error report failed: API key is invalid. id=%s code=%s", msg.id, response.code) }
+        warn { sprintf("Error report failed: %s id=%s code=%s", response.error_message, msg.id, response.code) }
         suspend(3600)
       when 413
         warn { sprintf("Error report failed: Payload is too large. id=%s code=%s", msg.id, response.code) }
@@ -233,7 +250,7 @@ module Honeybadger
           info { sprintf("Success ⚡ https://%s/notice/%s id=%s code=%s", host, msg.id, msg.id, response.code) }
         end
       when :stubbed
-        info { sprintf("Success ⚡ Development mode is enabled; this error will be reported if it occurs after you deploy your app. id=%s", msg.id) }
+        debug { sprintf("Success ⚡ Development mode is enabled; this error will be reported if it occurs after you deploy your app. id=%s", msg.id) }
       when :error
         warn { sprintf("Error report failed: an unknown error occurred. code=%s error=%s", response.code, response.message.to_s.dump) }
       else

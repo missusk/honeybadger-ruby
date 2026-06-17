@@ -137,9 +137,13 @@ module Honeybadger
     def kill!
       d { "killing worker thread" }
 
+      if timeout_thread
+        Thread.kill(timeout_thread)
+        timeout_thread.join # Allow ensure blocks to execute.
+      end
+
       if thread
         Thread.kill(thread)
-        Thread.kill(timeout_thread)
         thread.join # Allow ensure blocks to execute.
       end
 
@@ -290,7 +294,7 @@ module Honeybadger
         warn { sprintf("Insights Event send failed: payment is required. code=%s", response.code) }
         suspend(3600)
       when 403
-        warn { sprintf("Insights Event send failed: API key is invalid. code=%s", response.code) }
+        warn { sprintf("Insights Event send failed: %s code=%s", response.error_message, response.code) }
         suspend(3600)
       when 413
         warn { sprintf("Insights Event send failed: Payload is too large. code=%s", response.code) }
@@ -301,7 +305,7 @@ module Honeybadger
           debug { sprintf("Success ⚡ Insights Event sent code=%s", response.code) }
         end
       when :stubbed
-        info { "Success ⚡ Development mode is enabled; This event will be sent after app is deployed." }
+        debug { "Success ⚡ Development mode is enabled; This event will be sent after app is deployed." }
       when :error
         warn { sprintf("Insights Event send failed: an unknown error occurred. code=%s error=%s", response.code, response.message.to_s.dump) }
       else
