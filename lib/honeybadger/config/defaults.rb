@@ -38,11 +38,17 @@ module Honeybadger
       {event_type: "sql.active_record", name: /^GoodJob/},
       {event_type: "process_action.action_controller", controller: "Rails::HealthController"},
       {event_type: "cache_read.active_support"},
+      {event_type: "cache_read_multi.active_support"},
       {event_type: "cache_fetch_hit.active_support"},
       {event_type: "cache_exist?.active_support"},
       {event_type: "cache_write.active_support"},
+      {event_type: "cache_write_multi.active_support"},
       {event_type: "cache_generate.active_support"},
       {event_type: "cache_delete.active_support"},
+      {event_type: "cache_delete_multi.active_support"},
+      {event_type: "cache_delete_matched.active_support"},
+      {event_type: "cache_cleanup.active_support"},
+      {event_type: "cache_prune.active_support"},
       {event_type: "cache_increment.active_support"},
       {event_type: "cache_decrement.active_support"}
     ].freeze
