@@ -18,10 +18,6 @@ gem "mutex_m"
 gem "capistrano"
 gem "rake"
 
-# rdoc has moved to a rubygem in Ruby 3.5.0: https://github.com/ruby/rdoc
-# RDoc 8 depends on RBS 4, whose native extension is unsupported by JRuby.
-gem "rdoc", "< 8"
-
 gem "bump", "~> 0.10.0"
 
 group :development do
