@@ -17,13 +17,6 @@ describe Honeybadger::EventsWorker do
 
   subject { instance }
 
-  after do
-    Thread.list.each do |thread|
-      next unless thread.is_a?(Honeybadger::EventsWorker::Thread)
-      Thread.kill(thread)
-    end
-  end
-
   context "when an exception happens in the worker loop" do
     before do
       allow(instance.send(:queue)).to receive(:pop).and_raise("fail")

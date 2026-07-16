@@ -10,13 +10,6 @@ describe Honeybadger::MetricsWorker do
 
   subject { instance }
 
-  after do
-    Thread.list.each do |thread|
-      next unless thread.is_a?(Honeybadger::MetricsWorker::Thread)
-      Thread.kill(thread)
-    end
-  end
-
   describe "work depends on tick" do
     let(:obj) { double("CollectionExecution", tick: tick) }
 
