@@ -12,13 +12,6 @@ describe Honeybadger::Worker do
 
   subject { instance }
 
-  after do
-    Thread.list.each do |thread|
-      next unless thread.is_a?(Honeybadger::Worker::Thread)
-      Thread.kill(thread)
-    end
-  end
-
   context "when an exception happens in the worker loop" do
     before do
       allow(instance.send(:queue)).to receive(:pop).and_raise("fail")
@@ -300,6 +293,12 @@ describe Honeybadger::Worker do
         30.times do
           subject.push(obj)
         end
+
+        100.times do
+          break if subject.send(:throttled?)
+          sleep(0.01)
+        end
+        expect(subject.send(:throttled?)).to be(true)
 
         subject.shutdown
       end

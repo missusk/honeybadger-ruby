@@ -3,7 +3,6 @@
 RAILS_GEMS = %w[activesupport activemodel activerecord activejob railties actionpack]
 
 appraise "standalone" do
-  gem "rdoc"
 end
 
 if !RUBY_PLATFORM.match?(/java/)
@@ -84,21 +83,41 @@ if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("2.5.0")
   appraise "rails8" do
     RAILS_GEMS.each { |rails_gem| gem rails_gem, "~> 8.0.2" }
     gem "sqlite3", "~> 2", platforms: :mri
-    gem "activerecord-jdbcsqlite3-adapter", platforms: :jruby
-    gem "psych", "< 5.2.4", platforms: :jruby
     gem "better_errors", require: false, platforms: :mri
     gem "rack-mini-profiler", require: false
     gem "rspec-rails"
     gem "tzinfo-data" # Needed for timezones to work on Windows
+
+    # bigdecimal (from the root Gemfile) is a C extension; keep it off JRuby.
+    # It is re-added below for MRI only.
+    remove_gem "bigdecimal"
+
+    platforms :jruby do
+      gem "activerecord-jdbcsqlite3-adapter"
+
+      # Let Bundler pick the JRuby build of psych (>= 5.2.4 on java doesn't pull the C-ext `date` gem)
+      gem "psych", "~> 5.2", require: false
+
+      # Keep IRB usable without dragging in `io-console` (MRI-only C ext)
+      gem "reline", "~> 0.5.10", require: false
+
+      gem "nokogiri"
+      gem "racc", ">= 1.7.3"
+
+      # Ensure MRI-only bits never try to build on JRuby
+      gem "io-console", platforms: [:ruby]
+      gem "date", platforms: [:ruby]
+      gem "bigdecimal", platforms: [:ruby]
+    end
   end
 
   # Rails edge
   appraise "rails" do
-    RAILS_GEMS.each { |rails_gem| gem rails_gem, github: "rails" }
-    gem "rack", github: "rack/rack", branch: "2-2-stable" # Rack"s main branch is Rack 3, but ActionPack currently requires Rack 2
+    gem "activesupport", "> 7", github: "rails", branch: "main"
+    (RAILS_GEMS - %w[activesupport]).each { |rails_gem| gem rails_gem, github: "rails", branch: "main" }
+    gem "rack", github: "rack/rack"
     gem "arel", github: "rails/arel"
     gem "sqlite3", "~> 2", platforms: :mri
-    gem "psych", "< 5.2.4", platforms: :jruby
     gem "capistrano", "~> 3.0"
     gem "better_errors", require: false, platforms: :mri
     gem "rspec-rails"
@@ -108,6 +127,28 @@ if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("2.5.0")
     # there. See https://github.com/rails/rails/pull/24066
     gem "listen"
     gem "tzinfo-data" # Needed for timezones to work on Windows
+
+    # bigdecimal (from the root Gemfile) is a C extension; keep it off JRuby.
+    # It is re-added below for MRI only.
+    remove_gem "bigdecimal"
+
+    platforms :jruby do
+      gem "activerecord-jdbcsqlite3-adapter"
+
+      # Let Bundler pick the JRuby build of psych (>= 5.2.4 on java doesn't pull the C-ext `date` gem)
+      gem "psych", "~> 5.2", require: false
+
+      # Keep IRB usable without dragging in `io-console` (MRI-only C ext)
+      gem "reline", "~> 0.5.10", require: false
+
+      gem "nokogiri"
+      gem "racc", ">= 1.7.3"
+
+      # Ensure MRI-only bits never try to build on JRuby
+      gem "io-console", platforms: [:ruby]
+      gem "date", platforms: [:ruby]
+      gem "bigdecimal", platforms: [:ruby]
+    end
   end
 end
 

@@ -12,6 +12,12 @@ ENV["RAILS_ENV"] = nil
 
 require "honeybadger/ruby"
 
+worker_thread_classes = [
+  Honeybadger::Worker::Thread,
+  Honeybadger::EventsWorker::Thread,
+  Honeybadger::MetricsWorker::Thread
+]
+
 begin
   require "i18n"
   I18n.enforce_available_locales = false
@@ -66,6 +72,20 @@ RSpec.configure do |config|
 
   config.after(:each) do
     Honeybadger.clear!
+
+    Thread.list.each do |thread|
+      next unless worker_thread_classes.any? { |klass| thread.is_a?(klass) }
+
+      thread.report_on_exception = false
+      Thread.kill(thread)
+      begin
+        thread.join
+      rescue Exception # rubocop:disable Lint/RescueException
+        # Joining a killed thread re-raises the exception that terminated it.
+        # Leaked worker threads can die with RSpec::Mocks::MockExpectationError,
+        # which descends from Exception, so a bare rescue is not enough.
+      end
+    end
   end
 
   begin
