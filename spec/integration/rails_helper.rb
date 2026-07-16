@@ -31,11 +31,18 @@ def load_rails_hooks(spec)
       config.events.batch_size = 0
     end
 
-    # Because we create a new Agent after each spec run, we need to make sure
-    # that rerun the after_initialize hook to initilize our Agent
+    # Because we create a new Agent after each spec run, initialize it with
+    # the same framework config as the Railtie. Re-running every Rails load
+    # hook is unsafe because framework hooks are not necessarily idempotent.
     if RailsApp.initialized?
-      ActiveSupport.run_load_hooks(:before_initialize, RailsApp)
-      ActiveSupport.run_load_hooks(:after_initialize, RailsApp)
+      Honeybadger.init!({
+        root: Rails.root.to_s,
+        env: Rails.env,
+        "config.path": Rails.root.join("config", "honeybadger.yml"),
+        logger: Honeybadger::Logging::FormattedLogger.new(Rails.logger),
+        framework: :rails
+      })
+      Honeybadger.load_plugins!
     else
       RailsApp.initialize!
     end
