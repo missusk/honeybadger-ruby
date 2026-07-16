@@ -1,6 +1,15 @@
 # Change Log
 
 
+## [6.9.1](https://github.com/honeybadger-io/honeybadger-ruby/compare/v6.9.0...v6.9.1) (2026-07-16)
+
+
+### Bug Fixes
+
+* ignore more cache events ([#832](https://github.com/honeybadger-io/honeybadger-ruby/issues/832)) ([2cb6e02](https://github.com/honeybadger-io/honeybadger-ruby/commit/2cb6e02759b97b2ff0aa754e5eae2e737f9b5440))
+* pin rdoc for jruby compatibility ([#835](https://github.com/honeybadger-io/honeybadger-ruby/issues/835)) ([98f5580](https://github.com/honeybadger-io/honeybadger-ruby/commit/98f5580827c1b1acbf2585110cd11b110fdcfd4c))
+* respect logging.level with Rails logger ([#834](https://github.com/honeybadger-io/honeybadger-ruby/issues/834)) ([441ce44](https://github.com/honeybadger-io/honeybadger-ruby/commit/441ce444c65c58d95882f9cba958bcfd96fe309c)), closes [#375](https://github.com/honeybadger-io/honeybadger-ruby/issues/375)
+
 ## [6.9.0](https://github.com/honeybadger-io/honeybadger-ruby/compare/v6.8.0...v6.9.0) (2026-06-11)
 
 
