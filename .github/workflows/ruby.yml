@@ -27,6 +27,7 @@ jobs:
           - '3.2'
           - '3.3'
           - '3.4'
+          - '4.0'
           - 'ruby-head'
         gemfile:
           - binding_of_caller.gemfile
@@ -58,6 +59,10 @@ jobs:
           - ruby: '3.4'
             gemfile: rails7.0.gemfile
           - ruby: 'ruby-head'
+            gemfile: rails7.0.gemfile
+          - ruby: '4.0'
+            gemfile: rails6.1.gemfile
+          - ruby: '4.0'
             gemfile: rails7.0.gemfile
     # Has to be top level to cache properly
     env:
